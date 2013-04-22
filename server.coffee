@@ -76,6 +76,8 @@ io = sockets.listen(application)
 io.sockets.on 'connection', ( socket ) ->
 
   socket.on 'mousepos', (data) ->
+    if data.size && data.size > 10
+      data.size = 1
 
     socket.broadcast.emit 'mousepos', data
     return

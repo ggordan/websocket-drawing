@@ -1,29 +1,53 @@
 jQuery(document).ready ($) ->
 
+  touchHandler = (event) ->
+    touches = event.changedTouches
+    first = touches[0]
+    type = "";
+
+    switch event.type
+      when "touchstart" then type = "mousedown"
+      when "touchmove" then type="mousemove"
+      when "touchend" then type="mouseup"
+      else return
+
+    simulatedEvent = document.createEvent("MouseEvent");
+    simulatedEvent.initMouseEvent(type, true, true, window, 1,
+      first.screenX, first.screenY,
+      first.clientX, first.clientY, false,
+      false, false, false, false, null);
+
+    first.target.dispatchEvent(simulatedEvent);
+    event.preventDefault();
+    return
+
+  document.addEventListener "touchstart", touchHandler, true
+  document.addEventListener "touchmove", touchHandler, true
+  document.addEventListener "touchend", touchHandler, true
+  document.addEventListener "touchcancel", touchHandler, true
+
   socket = io.connect('http://192.168.1.108:1337')
 
   canvas = document.getElementById("drawingBoard")
   context = canvas.getContext("2d")
-  canvas.width = window.innerWidth - 2;
-  canvas.height = window.innerHeight - 2;
+  # Set the canvas size to fll up monitor
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
-  drawline = (x, y, xx, yy, colour, size) ->
-    console.log x, y, xx, yy
+  # function to draw lines from incoming connections
+  drawline = (data) ->
     context.beginPath()
-    context.moveTo(x, y)
-    context.lineTo xx, yy
-    context.strokeStyle = colour || 3
-    context.lineWidth = size || 'red'
+    context.moveTo(data.x, data.y)
+    context.strokeStyle = data.colour || 3
+    context.lineTo data.xx, data.yy
+    context.lineWidth = data.size || 'red'
     context.stroke()
     return
 
   # Handle the mouse move events
   socket.on 'mousepos', (data) ->
-    drawline data.x, data.y, data.xx, data.yy, data.colour, data.size
+    drawline data
     return
-
-  IE = document.all ? true : false
-  document.captureEvents(Event.MOUSEMOVE) if !IE
 
   canvas.addEventListener 'mousedown', ->
     @down = true
@@ -39,15 +63,23 @@ jQuery(document).ready ($) ->
       context.beginPath()
       context.moveTo(@X, @Y)
       context.lineTo e.pageX , e.pageY
-      mousexy = { x: @X, y: @Y, xx: e.pageX, yy: e.pageY, colour: $('.colour').val() , size: $('.size').val() }
       context.strokeStyle = $('.colour').val()
       context.lineWidth = $('.size').val()
       context.stroke()
 
+      mousexy = {
+        x: @X,
+        y: @Y,
+        xx: e.pageX,
+        yy: e.pageY,
+        colour: $('.colour').val() ,
+        size: $('.size').val()
+      }
+
+      socket.emit('mousepos', mousexy);
+
     @X = e.pageX
     @Y = e.pageY
-
-    socket.emit('mousepos', mousexy);
     return
   , 0
 
