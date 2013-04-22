@@ -12,26 +12,29 @@
             background:#e2e2e2;
         }
         canvas {
-            border: 1px dashed rgb(200, 200, 200);
             display:block;
             background:#fff;
         }
 
         .controls {
             position: absolute;
-            height:500px;
+            height:80px;
             width:200px;
-            background:#999999;
+            border: 1px dashed rgb(200, 200, 200);
             top:10px;
+            left:10px;
+            opacity:0.7;
+            background:#e2e2e2;
             color:#f8f8f8;
             font-size:15px;
-            left:10px;
             padding:10px;
         }
 
         input {
-            width:80px;
+            width:100%;
             outline:none;
+            border:none;
+            border-bottom:1px dashed rgb(200, 200, 200);
         }
 
     </style>
@@ -43,8 +46,8 @@
 <canvas id="drawingBoard"></canvas>
 <div class="controls">
     <ul>
-        <li> Line size: <input type="text" class="size" value="3" /></li>
-        <li> Line colour: <input type="text" class="colour" value="green" /></li>
+        <li> <input type="text" class="size" value="4" placeholder="Size (e.g. 4)" /></li>
+        <li> <input type="text" class="colour" value="green" value="blue" placeholder="Colour (e.g. blue)" /> </li>
     </ul>
 </div>
 </body>
