@@ -63,8 +63,8 @@ jQuery(document).ready ($) ->
       context.beginPath()
       context.moveTo(@X, @Y)
       context.lineTo e.pageX , e.pageY
-      context.strokeStyle = $('.colour').val()
-      context.lineWidth = $('.size').val()
+      context.strokeStyle = $('.colour').val() || '#00ff00'
+      context.lineWidth = $('.size').val() || 2
       context.stroke()
 
       mousexy = {
