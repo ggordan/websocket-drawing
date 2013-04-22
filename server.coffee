@@ -8,6 +8,17 @@ handler = (request, response) ->
 
   if request.url == '/'
     index request, response
+    return
+  else if request.url == '/draw.js'
+    jsResponse request, response
+    return
+  else
+    response.writeHead 500
+    response.end "Error"
+    return
+
+  return
+
 
 #
 # Serve up index page
@@ -19,6 +30,24 @@ index = (req, res) ->
   fs.readFile template, (err, data) ->
     errorHandler(req, res) if err
     res.writeHead 200
+    res.end data
+    return
+
+
+#
+# Serve up the javascript file
+#
+jsResponse = (req, res) ->
+
+  template = __dirname + '/draw.js'
+
+  headers = {
+    'Content-Type': 'text/javascript'
+  }
+
+  fs.readFile template, (err, data) ->
+    errorHandler(req, res) if err
+    res.writeHead 200, headers
     res.end data
     return
 
