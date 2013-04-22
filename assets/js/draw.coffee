@@ -26,7 +26,7 @@ jQuery(document).ready ($) ->
   document.addEventListener "touchend", touchHandler, true
   document.addEventListener "touchcancel", touchHandler, true
 
-  socket = io.connect('http://192.168.1.108:1337')
+  socket = io.connect('http://localhost:1337')
 
   canvas = document.getElementById("drawingBoard")
   context = canvas.getContext("2d")
