@@ -3,19 +3,49 @@
 <head>
     <title> Example </title>
     <style>
+
+        * { margin: 0; padding: 0; }
+
         html,body {
             height:100%;
             width:100%;
+            background:#e2e2e2;
         }
         canvas {
             border: 1px dashed rgb(200, 200, 200);
+            display:block;
+            background:#fff;
         }
+
+        .controls {
+            position: absolute;
+            height:500px;
+            width:200px;
+            background:#999999;
+            top:10px;
+            color:#f8f8f8;
+            font-size:15px;
+            left:10px;
+            padding:10px;
+        }
+
+        input {
+            width:80px;
+            outline:none;
+        }
+
     </style>
     <script src="/socket.io/socket.io.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="/draw.js"></script>
+    <script src="draw.js"></script>
 </head>
 <body>
-<canvas id="sh" width="800px" height="500px"></canvas>
+<canvas id="drawingBoard"></canvas>
+<div class="controls">
+    <ul>
+        <li> Line size: <input type="text" class="size" value="3" /></li>
+        <li> Line colour: <input type="text" class="colour" value="green" /></li>
+    </ul>
+</div>
 </body>
 </html>

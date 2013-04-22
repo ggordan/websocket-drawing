@@ -9,12 +9,12 @@ handler = (request, response) ->
   if request.url == '/'
     index request, response
     return
-  else if request.url == '/draw.js'
-    jsResponse request, response
+  else if (/\.(js)$/i).test(request.url)
+    jsHandler request, response
     return
   else
     response.writeHead 500
-    response.end "Error"
+    response.end error_codes[500]
     return
 
   return
@@ -35,18 +35,18 @@ index = (req, res) ->
 
 
 #
-# Serve up the javascript file
+# Serve up the javascript files
 #
-jsResponse = (req, res) ->
 
-  template = __dirname + '/draw.js'
+jsHandler = (req, res) ->
+  file = __dirname + '/assets/js/' + req.url
 
   headers = {
     'Content-Type': 'text/javascript'
   }
 
-  fs.readFile template, (err, data) ->
-    errorHandler(req, res) if err
+  fs.readFile file, (err, data) ->
+    errorHandler(req, res, 404) if err
     res.writeHead 200, headers
     res.end data
     return
@@ -55,12 +55,16 @@ jsResponse = (req, res) ->
 #
 # Error handler
 #
-errorHandler = (req, res) ->
 
-  res.writeHead 404, headers
-  res.write "404 Not Found\n"
+error_codes = {
+  404: "404 Not Found\n",
+  500: "Internal server error\n"
+}
+
+errorHandler = (req, res, error_code = 404) ->
+  res.writeHead error_code
+  res.write error_codes[error_code]
   res.end()
-
   return
 
 # Start the server at port 1337
@@ -70,8 +74,10 @@ io = sockets.listen(application)
 # SOCKETS
 
 io.sockets.on 'connection', ( socket ) ->
-  socket.join 'mouse_movers'
+
   socket.on 'mousepos', (data) ->
+
     socket.broadcast.emit 'mousepos', data
     return
+
   return
